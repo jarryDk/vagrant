@@ -17,7 +17,7 @@ agents = {
 
 server_script = <<-SHELL
     sudo -i
-    apk add curl
+    setenforce 0
     export INSTALL_K3S_EXEC="--bind-address=#{server_ip} --node-external-ip=#{server_ip} --flannel-iface=eth1"
     curl -sfL https://get.k3s.io | sh -
     echo "Sleeping for 5 seconds to wait for k3s to start"
@@ -28,7 +28,7 @@ server_script = <<-SHELL
 
 agent_script = <<-SHELL
     sudo -i
-    apk add curl
+    setenforce 0
     export K3S_TOKEN_FILE=/vagrant_shared/token
     export K3S_URL=https://#{server_ip}:6443
     export INSTALL_K3S_EXEC="--flannel-iface=eth1"
@@ -37,7 +37,7 @@ agent_script = <<-SHELL
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "generic/alpine314"
+  config.vm.box = "generic/rocky9"
 
   username = "#{ENV['USERNAME'] || `whoami`}"
 
@@ -49,8 +49,6 @@ Vagrant.configure("2") do |config|
       vb.memory = "2048"
       vb.cpus = "2"
     end
-
-    server.vm.provision "shell", inline: server_script
 
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "provisioning/playbook.yml"
@@ -68,6 +66,9 @@ Vagrant.configure("2") do |config|
       SHELL
     end
 
+    # Install k3s - server
+    server.vm.provision "shell", inline: server_script
+
   end
 
   agents.each do |agent_name, agent_ip|
@@ -79,8 +80,6 @@ Vagrant.configure("2") do |config|
         vb.memory = "1024"
         vb.cpus = "1"
       end
-      
-      agent.vm.provision "shell", inline: agent_script
 
       agent.vm.provision "ansible" do |ansible|
         ansible.playbook = "provisioning/playbook.yml"
@@ -97,6 +96,9 @@ Vagrant.configure("2") do |config|
           echo #{ssh_pub_key} >> /home/#{username}/.ssh/authorized_keys
         SHELL
       end
+
+       # Install k3s - agent
+      agent.vm.provision "shell", inline: agent_script
 
     end
   end

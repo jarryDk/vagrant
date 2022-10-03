@@ -1,0 +1,22 @@
+= Vagrant - k3s
+
+Get https://k3s.io/[K3S] up running on https://app.vagrantup.com/generic/boxes/rocky9[generic/rocky9]
+
+https://docs.k3s.io/installation/kube-dashboard[Kubernetes Dashboard] is in ToDo state.
+
+== Commands
+
+`vagrant up` : Starts and provisions the vagrant environment
+
+`vagrant ssh` : Connects to machine via SSH as the user vagrant
+
+`vagrant destroy` : Stops and deletes all traces of the vagrant machine
+
+== Links
+
+- https://www.vagrantup.com/docs/provisioning/ansible[Ansible Provisioner]
+- https://www.vagrantup.com/docs/provisioning/ansible_intro[Ansible and Vagrant]
+- https://docs.k3s.io/
+
+
+
