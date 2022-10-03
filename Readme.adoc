@@ -1,0 +1,26 @@
+= Vagrant
+
+Project to help spin up virtual servers in VirtualBox using Vagrant.
+
+== Provisioning
+
+- Create a group and user (Ansible)
+- Add authorized_keys to the users
+    * vagrant
+    * the newly created user (partly hardcode to micbn - in playbook.yml)
+
+== Commands
+
+`vagrant up` : Starts and provisions the vagrant environment
+
+`vagrant ssh` : Connects to machine via SSH as the user vagrant
+
+`vagrant destroy` : Stops and deletes all traces of the vagrant machine
+
+== Links
+
+- https://www.vagrantup.com/docs/provisioning/ansible[Ansible Provisioner]
+- https://www.vagrantup.com/docs/provisioning/ansible_intro[Ansible and Vagrant]
+
+
+

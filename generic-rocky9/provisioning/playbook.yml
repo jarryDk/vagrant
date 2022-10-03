@@ -1,0 +1,9 @@
+- hosts: all
+  become: true
+
+  vars:
+    user_password: "Password1234"
+
+  roles:
+    - role: updates
+    - role: users

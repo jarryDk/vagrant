@@ -1,0 +1,34 @@
+# https://coderwall.com/p/uzkokw/configure-the-vagrant-login-user-during-provisioning-using-the-shell-provider
+
+Vagrant.configure("2") do |config|
+
+    username = "#{ENV['USERNAME'] || `whoami`}"
+
+    config.vm.box = "generic/centos8"
+
+    config.vm.provider "virtualbox" do |vb|
+        vb.memory = "8192"
+        vb.cpus = 4
+        vb.name = "Centos8-Playground"
+    end
+
+    #
+    # Run Ansible from the Vagrant Host
+    #
+    config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "provisioning/playbook.yml"
+        ansible.extra_vars = {
+            user_name: "#{username}",
+            user_password: "#{username}"
+        }
+    end
+
+    config.vm.provision "shell" do |s|
+        ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+        s.inline = <<-SHELL
+          echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+          echo #{ssh_pub_key} >> /home/#{username}/.ssh/authorized_keys
+        SHELL
+    end
+
+end

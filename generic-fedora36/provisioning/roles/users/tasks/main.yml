@@ -1,0 +1,27 @@
+- name: Create group {{ user_name }}
+  group:
+    name: "{{ user_name }}"
+    state: present
+
+- name: Create user {{ user_name }}
+  user:
+    name: "{{ user_name }}"
+    group: "{{ user_name }}"
+    state: present
+    password: "{{ user_password | password_hash('sha512') }}"
+  register: create_user
+
+- name: Add the user {{ user_name }} to wheel group
+  user:
+    name: "{{ user_name }}"
+    groups: wheel
+    append: yes
+    state: present
+
+- name: Create directory $HOME/.ssh if it does not exist
+  ansible.builtin.file:
+    path: "/home/{{ user_name }}/.ssh"
+    state: directory
+    mode: "0700"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
