@@ -4,6 +4,12 @@ Vagrant.configure("2") do |config|
 
     username = "#{ENV['USERNAME'] || `whoami`}"
 
+    # Finding network interface 
+    networkInterface = "#{`ip -br -4 addr show | grep "UP" | cut -d " " -f1 | tr -d '\n'`}"
+
+    # Use Bridge Adaptor
+    config.vm.network "public_network", bridge: "#{networkInterface}"
+
     config.vm.box = "generic/centos8"
 
     config.vm.provider "virtualbox" do |vb|
