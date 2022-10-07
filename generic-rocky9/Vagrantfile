@@ -2,7 +2,7 @@
 
 Vagrant.configure("2") do |config|
 
-    username = "#{ENV['USERNAME'] || `whoami`}"
+    username = "#{ENV['USERNAME'] || `whoami | tr -d '\n'`}"
 
     config.vm.box = "generic/rocky9"
 
